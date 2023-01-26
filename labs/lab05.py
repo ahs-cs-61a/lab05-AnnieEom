@@ -34,6 +34,9 @@ class Keyboard: # q1
     """
     def __init__(self, *args):
         """YOUR CODE HERE"""
+        self.buttons = {}
+        for button in args:
+            self.buttons[button.pos]=button
 
 
     def press(self, info):
@@ -41,6 +44,10 @@ class Keyboard: # q1
         returns that button's output."""
 
         """YOUR CODE HERE"""
+        if info not in self.buttons:
+            return ''
+        self.buttons[info].times_pressed += 1
+        return self.buttons[info].key
 
 
     def typing(self, typing_input):
@@ -48,7 +55,10 @@ class Keyboard: # q1
         returns the total output."""
 
         """YOUR CODE HERE"""
-
+        output = ''
+        for info in typing_input:
+            output += self.press(info)
+        return output
 
 # lab04: https://inst.eecs.berkeley.edu/~cs61a/su22/lab/lab04/
 
@@ -82,18 +92,29 @@ class Minty:
 
     def create(self, type):
         "*** YOUR CODE HERE ***"
+        return Coin(self.year, type)
 
     def update(self):
         "*** YOUR CODE HERE ***"
+        self.year = Minty.present_year
 
 class Coin: # q2
     cents = 50
 
     def __init__(self, year, type):
         "*** YOUR CODE HERE ***"
+        self.year = year
+        self.type = type
+        
 
     def worth(self):
         "*** YOUR CODE HERE ***"
+        val = 0
+        if self.type == 'Dime':
+            val = 10
+        if self.type == 'Nickel':
+            val = 5
+        return val + Minty.present_year - self.year - Coin.cents
 
 
 # hw04: https://inst.eecs.berkeley.edu/~cs61a/su22/hw/hw04/

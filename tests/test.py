@@ -56,6 +56,7 @@ def test_keyboard():
     b2 = lab.Button(1, "I")
     k = lab.Keyboard(b1, b2)
     assert k.buttons[0].key == 'H'
+    assert k.press(1) == 'I'
     assert k.press(2) == ''
     assert k.typing([0, 1]) == 'HI'
     assert k.typing([1, 0]) == 'IH'
