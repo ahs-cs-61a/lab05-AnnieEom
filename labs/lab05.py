@@ -205,17 +205,24 @@ class VendingMachine: # q4
             return 'Nothing left to vend. Please restock.'
         elif self.balance == self.price:
             self.balance = 0
-            return 'Here is your candy.'
+            self.stock -= 1
+            return f'Here is your {self.name}.'
         elif self.balance < self.price:
             return f'Please update your balance with ${self.price-self.balance} more funds.'
         elif self.balance > self.price:
+            change = self.balance - self.price
             self.balance = 0
-            return f'Here is your candy and ${self.balance - self.price} change.'
+            self.stock -= 1
+            return f'Here is your {self.name} and ${change} change.'
     def add_funds(self, amount):
         if self.stock == 0:
             return f'Nothing left to vend. Please restock. Here is your ${amount}.'
         self.balance += amount
         return f'Current balance: ${self.balance}'
+    def restock(self, amount):
+        self.stock += amount
+        return f'Current {self.name} stock: {self.stock}'
+
 
 
 
@@ -358,8 +365,8 @@ class FreeChecking(Account): # q8
     "*** YOUR CODE HERE ***"
     def withdraw(self, amount):
         if self.free_withdrawals <= 0:
-            super().withdraw(amount+self.withdraw_fee)
+            return super().withdraw(amount+self.withdraw_fee)
         else:
             self.free_withdrawals -= 1
-            super().withdraw(amount)
+            return super().withdraw(amount)
     
