@@ -114,6 +114,8 @@ class Coin: # q2
             val = 10
         if self.type == 'Nickel':
             val = 5
+        if Minty.present_year == self.year:
+            return val
         return val + Minty.present_year - self.year - Coin.cents
 
 
@@ -141,9 +143,19 @@ class SmartFridge: # q3
         self.items = {}
     def add_item(self, item, quantity):
         "*** YOUR CODE HERE ***"
+        if item not in self.items:
+            self.items[item] = quantity
+        else:
+            self.items[item] += quantity
+        return f'I now have {self.items[item]} {item}'
     def use_item(self, item, quantity):
         "*** YOUR CODE HERE ***"
-
+        if (self.items[item] - quantity) <= 0:
+            self.items[item] = 0
+            return f'Oh no, we need more {item}!'
+        else: 
+            self.items[item] -= quantity
+        return f'I have {self.items[item]} {item} left'
 
 class VendingMachine: # q4
     """A vending machine that vends some product for some price.
@@ -183,6 +195,29 @@ class VendingMachine: # q4
     'Here is your soda.'
     """
     "*** YOUR CODE HERE ***"
+    def __init__(self, name, price):
+        self.name = name
+        self.price = price
+        self.balance = 0
+        self.stock = 0
+    def vend(self):
+        if self.stock == 0:
+            return 'Nothing left to vend. Please resock.'
+        elif self.balance == self.price:
+            self.balance = 0
+            return 'Here is your candy.'
+        elif self.balance < self.price:
+            return f'Please update your balance with ${self.price-self.balance} more funds.'
+        elif self.balance > self.price:
+            self.balance = 0
+            return f'Here is your candy and ${self.balance - self.price} change.'
+    def add_funds(self, amount):
+        if self.stock == 0:
+            return f'Nothing left to vend. Please restock. Here is your ${amount}.'
+        self.balance += amount
+        return f'Current balance: ${self.balance}'
+
+
 
     
 # disc06: https://inst.eecs.berkeley.edu/~cs61a/su22/disc/disc06/
@@ -201,6 +236,8 @@ class Cat(Pet): # q5
 
     def __init__(self, name, owner, lives=9):
         "*** YOUR CODE HERE ***"
+        super().__init__(name, owner)
+        self.life = lives
 
     def talk(self):
         """Print out a cat's greeting.
@@ -209,6 +246,7 @@ class Cat(Pet): # q5
         Thomas says meow!
         """
         "*** YOUR CODE HERE ***"
+        print(f'{self.name} says meow!')
 
     def lose_life(self):
         """Decrements a cat's life by 1. When lives reaches zero,
@@ -216,13 +254,18 @@ class Cat(Pet): # q5
         reached zero, print 'This cat has no more lives to lose.'
         """
         "*** YOUR CODE HERE ***"
+        if self.life == 0:
+            print ('This cat has no more lives to lose.')
+        else:
+            self.life -= 1
 
 
-class _______: # q6
+class NoisyCat(Cat): # q6
     """A Cat that repeats things twice."""
     def __init__(self, name, owner, lives=9):
         # Is this method necessary? Why or why not?
         "*** YOUR CODE HERE ***"
+        super().__init__(name, owner, lives)
 
     def talk(self):
         """Talks twice as much as a regular cat.
@@ -231,6 +274,8 @@ class _______: # q6
         Magic says meow!
         """
         "*** YOUR CODE HERE ***"
+        super().talk()
+        super().talk()
 
 
 # lab05: https://inst.eecs.berkeley.edu/~cs61a/su22/lab/lab05/
@@ -276,6 +321,12 @@ class Account: # q7
         """Return the number of years until balance would grow to amount."""
         assert self.balance > 0 and amount > 0 and self.interest > 0
         "*** YOUR CODE HERE ***"
+        count = 0
+        val = self.balance
+        while val < amount:
+            val += val*Account.interest
+            count+=1
+        return count
 
 
 class FreeChecking(Account): # q8
@@ -305,3 +356,10 @@ class FreeChecking(Account): # q8
     free_withdrawals = 2
 
     "*** YOUR CODE HERE ***"
+    def withdraw(self, amount):
+        if self.free_withdrawals <= 0:
+            super().withdraw(amount+1)
+        else:
+            self.free_withdrawals -= 1
+            super().withdraw(amount)
+    
