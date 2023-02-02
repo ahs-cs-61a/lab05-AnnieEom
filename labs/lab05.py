@@ -202,7 +202,7 @@ class VendingMachine: # q4
         self.stock = 0
     def vend(self):
         if self.stock == 0:
-            return 'Nothing left to vend. Please resock.'
+            return 'Nothing left to vend. Please restock.'
         elif self.balance == self.price:
             self.balance = 0
             return 'Here is your candy.'
@@ -358,7 +358,7 @@ class FreeChecking(Account): # q8
     "*** YOUR CODE HERE ***"
     def withdraw(self, amount):
         if self.free_withdrawals <= 0:
-            super().withdraw(amount+1)
+            super().withdraw(amount+self.withdraw_fee)
         else:
             self.free_withdrawals -= 1
             super().withdraw(amount)
